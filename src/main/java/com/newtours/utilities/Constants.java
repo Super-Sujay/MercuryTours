@@ -16,11 +16,11 @@ public interface Constants {
 	String driver_ie = "webdriver.ie.driver";
 	String driver_firefox = "webdriver.firefox.driver";
 
-	String driverPath_chrome = "D:\\Selenium Tools\\Web Drivers\\chromedriver.exe";
-	String driverPath_ie = "D:\\Selenium Tools\\Web Drivers\\internetexplorerdriver.exe";
-	String driverPath_firefox = "D:\\Selenium Tools\\Web Drivers\\firefoxdriver.exe";
+	String driverPath_chrome = "src/test/resources/chromedriver.exe";
+	String driverPath_ie = "src/test/resources/IEDriverServer.exe";
+	String driverPath_firefox = "src/test/resources/geckodriver.exe";
 
-	String screenShotDestination = System.getProperty("user.dir") + "\\screenshots\\";
+	String screenShotDestination = "./screenshots/";
 
 	String mercuryToursWebsite = "http://newtours.demoaut.com";
 

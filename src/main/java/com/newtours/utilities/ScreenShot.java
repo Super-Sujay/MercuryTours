@@ -11,6 +11,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.testng.Reporter;
 
+import com.newtours.base.BaseTest;
+
 /**
  * This Class is used to take <b>Screenshot</b> at the current page.
  * 
@@ -31,11 +33,14 @@ public class ScreenShot {
 		DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
 		String fileName = "ScreenShot_" + datePattern.format(dateTime) + ".jpg";
 		TakesScreenshot scr = (TakesScreenshot) BaseTest.getWebDriver();
+		Path screenshot = Paths.get(Constants.screenShotDestination);
 		Path source = scr.getScreenshotAs(OutputType.FILE).toPath();
 		Path target = Paths.get(Constants.screenShotDestination + fileName);
 		try {
 			System.out.println("Screen shot at " + Constants.screenShotDestination);
 			Reporter.log("Screen shot at " + Constants.screenShotDestination + "<br>");
+			if (Files.notExists(screenshot))
+				Files.createDirectory(screenshot);
 			Files.copy(source, target);
 		} catch (IOException e) {
 			System.out.println("Unable to take screen shot");
@@ -55,13 +60,16 @@ public class ScreenShot {
 
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
-		String fileName = "ScreenShot of " + name + "_" + datePattern.format(dateTime) + ".jpg";
+		String fileName = name + "_" + datePattern.format(dateTime) + ".jpg";
 		TakesScreenshot scr = (TakesScreenshot) BaseTest.getWebDriver();
+		Path screenshot = Paths.get(Constants.screenShotDestination);
 		Path source = scr.getScreenshotAs(OutputType.FILE).toPath();
 		Path target = Paths.get(Constants.screenShotDestination + fileName);
 		try {
 			System.out.println("Screen shot at " + Constants.screenShotDestination);
 			Reporter.log("Screen shot at " + Constants.screenShotDestination + "<br>");
+			if (Files.notExists(screenshot))
+				Files.createDirectory(screenshot);
 			Files.copy(source, target);
 		} catch (IOException e) {
 			System.out.println("Unable to take screen shot");

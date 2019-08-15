@@ -5,7 +5,6 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.Reporter;
 
 /**
@@ -56,7 +55,7 @@ public class Actions {
 			System.out.println("Unable to click on " + description);
 			Reporter.log("Unable to click on " + description + "<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
+			throw e;
 		}
 	}
 
@@ -82,7 +81,7 @@ public class Actions {
 			System.out.println("Unable to send text [" + text + "] in " + description);
 			Reporter.log("Unable to send text [" + text + "] in " + description + "<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
+			throw e;
 		}
 	}
 
@@ -101,7 +100,7 @@ public class Actions {
 			System.out.println("Unable to select [" + text + "] from the " + description);
 			Reporter.log("Unable to select [" + text + "] from the " + description + "<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
+			throw e;
 		}
 	}
 
@@ -128,7 +127,7 @@ public class Actions {
 			System.out.println("Unable to check or uncheck " + description);
 			Reporter.log("Unable to check or uncheck " + description + "<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
+			throw e;
 		}
 	}
 
@@ -139,13 +138,14 @@ public class Actions {
 	 */
 	public String getText() {
 		try {
+			System.out.println("Get text from the " + description);
+			Reporter.log("Get text from the " + description + "<br>");
 			return driver.findElement(By.xpath(locator)).getText();
 		} catch (Exception e) {
 			System.out.println("Unable to get the text of " + description);
 			Reporter.log("Unable to get the text of " + description + "<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
-			return null;
+			throw e;
 		}
 	}
 
@@ -176,7 +176,7 @@ public class Actions {
 			System.out.println("Issue with the Alert");
 			Reporter.log("Issue with the Alert<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
+			throw e;
 		}
 	}
 	
@@ -202,8 +202,7 @@ public class Actions {
 			System.out.println("Issue with the isPresent Method");
 			Reporter.log("Issue with the isPresent Method<br>");
 			ScreenShot.takeScreenShot("Failure");
-			Assert.assertTrue(false);
-			return false;
+			throw e;
 		}
 	}
 }

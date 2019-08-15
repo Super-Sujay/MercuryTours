@@ -1,12 +1,12 @@
 package com.newtours.pages;
 
+import com.newtours.base.BaseTest;
 import com.newtours.elements.Banner;
 import com.newtours.elements.Button;
 import com.newtours.elements.CheckBox;
 import com.newtours.elements.DropDown;
 import com.newtours.elements.Text;
 import com.newtours.elements.Textbox;
-import com.newtours.utilities.BaseTest;
 
 /**
  * This is the Page Class for the First Purchase page.<br>

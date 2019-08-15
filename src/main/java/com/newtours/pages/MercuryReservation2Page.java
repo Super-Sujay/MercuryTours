@@ -1,9 +1,9 @@
 package com.newtours.pages;
 
+import com.newtours.base.BaseTest;
 import com.newtours.elements.Banner;
 import com.newtours.elements.Button;
 import com.newtours.elements.RadioButton;
-import com.newtours.utilities.BaseTest;
 
 /**
  * This is the Page Class for the Second Reservation page.<br>

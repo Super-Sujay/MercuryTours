@@ -1,9 +1,9 @@
 package com.newtours.pages;
 
+import com.newtours.base.BaseTest;
 import com.newtours.elements.Alert;
 import com.newtours.elements.Banner;
 import com.newtours.elements.Hyperlink;
-import com.newtours.utilities.BaseTest;
 
 /**
  * This is the Page Class for the main web page.<br>

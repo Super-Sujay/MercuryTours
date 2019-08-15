@@ -1,12 +1,18 @@
-package com.newtours.utilities;
+package com.newtours.base;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
-@Listeners(com.newtours.utilities.ListnersTest.class)
+import com.newtours.utilities.BrowserDriverFactory;
+
+@Listeners(com.newtours.utilities.MyListners.class)
 
 /**
  * This Class contains all the essential methods for a Test Class.<br>
@@ -18,23 +24,28 @@ import org.testng.annotations.Listeners;
  */
 public class BaseTest {
 
-	public static WebDriver driver;
+	protected static WebDriver driver;
+	protected Map<String, String> testConfig = new HashMap<String, String>();
 
 	/**
-	 * This method will run before each Method.
+	 * This method will run at the start of the suite execution.
 	 */
-	@BeforeMethod
-	public void before() {
-		BrowserUtilities.openWebsite(getWebDriver(), Constants.mercuryToursWebsite);
-		BrowserUtilities.refreshWebpage(getWebDriver());
+	@BeforeSuite(alwaysRun = true)
+	@Parameters("browser")
+	public void before(@Optional("chrome") String browser) {
+		System.out.println("Setting up driver: [" + browser + "]");
+		BrowserDriverFactory factory = new BrowserDriverFactory(browser);
+		driver = factory.createDriver();
+		testConfig.put("browser", browser);
 	}
 
 	/**
-	 * This method will run after each Test.
+	 * This method will run at the end of the suite execution
 	 */
-	@AfterTest
+	@AfterSuite(alwaysRun = true)
 	public void after() {
-		BrowserUtilities.quitBrowser(getWebDriver());
+		System.out.println("Closing [driver]");
+		driver.quit();
 	}
 
 	/**
@@ -43,14 +54,7 @@ public class BaseTest {
 	 * @return WebDriver object
 	 */
 	public static WebDriver getWebDriver() {
-		if (driver == null) {
-			System.setProperty(Constants.driver_chrome, Constants.driverPath_chrome);
-			driver = new ChromeDriver();
-			return driver;
-		} else {
-			return driver;
-		}
-
+		return driver;
 	}
 
 }

@@ -1,9 +1,9 @@
 package com.newtours.pages;
 
+import com.newtours.base.BaseTest;
 import com.newtours.elements.Banner;
 import com.newtours.elements.Hyperlink;
 import com.newtours.elements.Textbox;
-import com.newtours.utilities.BaseTest;
 import com.newtours.utilities.Constants;
 
 /**
