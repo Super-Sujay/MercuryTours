@@ -3,14 +3,8 @@ package com.newtours.utilities;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Assert;
 import org.testng.Reporter;
-
-import com.newtours.pages.MainWebsitePage;
 
 /**
  * This Class contains all the essential methods related to a particular <b>Browser</b>.
@@ -22,39 +16,6 @@ import com.newtours.pages.MainWebsitePage;
 public class BrowserUtilities {
 
 	/**
-	 * This method is used to initialize the WebDriver object to a specific browser.
-	 * 
-	 * @param driver : WebDriver object
-	 * @param browserName : Name of the browser
-	 * @return WebDriver object of the mention browser
-	 */
-	public static WebDriver openBrowser(WebDriver driver, String browserName) {
-
-		switch (browserName) {
-		case Constants.browser_chrome:
-			System.out.println("Select [" + Constants.browser_chrome + "] browser");
-			Reporter.log("Select [" + Constants.browser_chrome + "] browser<br>");
-			System.setProperty(Constants.driver_chrome, Constants.driverPath_chrome);
-			return new ChromeDriver();
-		case Constants.browser_firefox:
-			System.out.println("Select [" + Constants.browser_firefox + "] browser");
-			Reporter.log("Select [" + Constants.browser_firefox + "] browser<br>");
-			System.setProperty(Constants.driver_firefox, Constants.driverPath_firefox);
-			return new FirefoxDriver();
-		case Constants.browser_ie:
-			System.out.println("Select [" + Constants.browser_ie + "] browser");
-			Reporter.log("Select [" + Constants.browser_ie + "] browser<br>");
-			System.setProperty(Constants.driver_ie, Constants.driverPath_ie);
-			return new InternetExplorerDriver();
-		default:
-			System.out.println("The browser [" + browserName + "] is not a valid browser");
-			Reporter.log("The browser [" + browserName + "] is not a valid browser<br>");
-			Assert.assertTrue(false);
-			return driver;
-		}
-	}
-
-	/**
 	 * This method is used to open a <b>Web Site</b>.
 	 * 
 	 * @param driver : WebDriver object
@@ -64,7 +25,6 @@ public class BrowserUtilities {
 		System.out.println("Open [" + websiteUrl + "] website");
 		Reporter.log("Open [" + websiteUrl + "] website<br>");
 		driver.navigate().to(websiteUrl);
-		Assert.assertTrue(MainWebsitePage.mercuryToursLogo.isPresent(), "Incorrect Web Site");
 	}
 
 	/**

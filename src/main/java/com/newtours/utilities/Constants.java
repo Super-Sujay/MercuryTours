@@ -14,13 +14,16 @@ public interface Constants {
 
 	String driver_chrome = "webdriver.chrome.driver";
 	String driver_ie = "webdriver.ie.driver";
-	String driver_firefox = "webdriver.firefox.driver";
+	String driver_firefox = "webdriver.gecko.driver";
 
 	String driverPath_chrome = "src/test/resources/chromedriver.exe";
 	String driverPath_ie = "src/test/resources/IEDriverServer.exe";
 	String driverPath_firefox = "src/test/resources/geckodriver.exe";
 
 	String screenShotDestination = "./screenshots/";
+	String reportsDestination = "./reports/";
+	
+	String reportsFileName = "ExtentReport.html";
 
 	String mercuryToursWebsite = "http://newtours.demoaut.com";
 

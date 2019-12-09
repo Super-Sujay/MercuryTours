@@ -1,5 +1,8 @@
 package com.newtours.utilities;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
@@ -31,7 +34,8 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 public class MyListners implements ITestListener, ISuiteListener, IInvokedMethodListener, IReporter {
 
 	private ExtentReports extent;
-	
+	private String failedScreenshot;
+
 	@Override
 	public void onTestStart(ITestResult result) {
 		System.out.println("Execution of the test " + result.getName() + " started");
@@ -40,12 +44,12 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		printTestResults(result);
+
 	}
 
 	@Override
 	public void onTestFailure(ITestResult result) {
-		printTestResults(result);
+		failedScreenshot = ScreenShot.takeScreenShot("Failure");
 	}
 
 	@Override
@@ -72,14 +76,16 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 
 	@Override
 	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		String methodName = method.getTestMethod().getRealClass().getSimpleName() + "." + method.getTestMethod().getMethodName();
+		String methodName = method.getTestMethod().getRealClass().getSimpleName() + "."
+				+ method.getTestMethod().getMethodName();
 		System.out.println("About to begin executing following method: " + methodName);
 		Reporter.log("About to begin executing following method: " + methodName + "<br>");
 	}
 
 	@Override
 	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-		String methodName = method.getTestMethod().getRealClass().getSimpleName() + "." + method.getTestMethod().getMethodName();
+		String methodName = method.getTestMethod().getRealClass().getSimpleName() + "."
+				+ method.getTestMethod().getMethodName();
 		System.out.println("About to end executing following method: " + methodName);
 		Reporter.log("About to end executing following method: " + methodName + "<br>");
 	}
@@ -95,7 +101,7 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 		System.out.println("About to end executing Suite " + suite.getName());
 		Reporter.log("About to end executing Suite " + suite.getName() + "<br>");
 	}
-	
+
 	@Override
 	public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory) {
 		init(xmlSuites);
@@ -117,23 +123,23 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 		tests.getAllResults().forEach(sortedSet::add);
 		if (tests.size() > 0) {
 			sortedSet.forEach(result -> {
-				ExtentTest test = extent.createTest(result.getTestContext().getCurrentXmlTest().getName() + " - " + result.getMethod().getMethodName());
+				ExtentTest test = extent.createTest(result.getTestContext().getCurrentXmlTest().getName() + " - "
+						+ result.getMethod().getMethodName());
 				test.assignCategory(result.getMethod().getRealClass().getSimpleName());
 				Throwable throwable = result.getThrowable();
+				Object[] parameters = result.getParameters();
+				if (parameters.length > 0) {
+					String params = Arrays.asList(parameters).stream().map(p -> p.toString()).collect(Collectors.joining(", "));
+					test.info(params);
+				}
+				Reporter.getOutput(result).forEach(test::info);
 				if (throwable != null) {
-					Object[] parameters = result.getParameters();
-					if (parameters.length > 0) {
-						try {
-							String params = Arrays.asList(parameters).stream().map(p -> (String) p).collect(Collectors.joining(", "));
-							test.info(params);
-						} catch (ClassCastException e) {
-							@SuppressWarnings("unchecked")
-							Map<String, String> data = (Map<String, String>) parameters[0];
-							test.info(data.toString());
-						}
-					} else
-						test.info("This test doesn't have data");
 					test.log(status, throwable);
+					try {
+						test.addScreenCaptureFromPath(System.getProperty("user.dir") + failedScreenshot, "Failure");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				} else
 					test.log(status, "Test " + status.toString().toLowerCase() + "ed");
 				test.getModel().setStartTime(getTime(result.getStartMillis()));
@@ -148,7 +154,14 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 
 	private void init(List<XmlSuite> xmlSuites) {
 		String suiteName = xmlSuites.get(0).getName();
-		ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("");
+		if (Files.notExists(Paths.get(Constants.reportsDestination)))
+			try {
+				Files.createDirectory(Paths.get(Constants.reportsDestination));
+			} catch (IOException e) {
+				System.out.println("Unable to create path: " + Constants.reportsDestination);
+			}
+		ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(
+				Constants.reportsDestination + Constants.reportsFileName);
 		htmlReporter.config().setDocumentTitle("ExtentReports: " + suiteName);
 		htmlReporter.config().setReportName(suiteName);
 		htmlReporter.config().setTheme(Theme.STANDARD);
@@ -158,25 +171,23 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 		extent.attachReporter(htmlReporter);
 		extent.setReportUsesManualConfiguration(true);
 	}
-	
+
 	private void printTestResults(ITestResult result) {
 		System.out.println("Test Method resides in " + result.getTestClass().getName());
 		Reporter.log("Test Method resides in " + result.getTestClass().getName() + "<br>");
-		
 		if (result.getParameters().length != 0) {
 			String params = "";
 			for (Object parameter : result.getParameters()) {
 				params += parameter.toString() + ", ";
 			}
-			params = params.substring(0, params.length()-2);
+			params = params.substring(0, params.length() - 2);
 			System.out.println("Test Method has the following parameters: " + params);
 			Reporter.log("Test Method has the following parameters: " + params + "<br>");
 		}
-		
 		String status;
-		switch(result.getStatus()){
+		switch (result.getStatus()) {
 		case ITestResult.SUCCESS:
-			status = "Pass";
+			status = "Passed";
 			break;
 		case ITestResult.FAILURE:
 			status = "Failed";
@@ -187,7 +198,6 @@ public class MyListners implements ITestListener, ISuiteListener, IInvokedMethod
 		default:
 			status = null;
 		}
-		
 		System.out.println("Test Status: " + status);
 		Reporter.log("Test Status: " + status + "<br>");
 	}

@@ -27,7 +27,7 @@ public class ScreenShot {
 	 * 
 	 * @param driver : WebDriver object
 	 */
-	public static void takeScreenShot() {
+	public static String takeScreenShot() {
 
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
@@ -47,6 +47,7 @@ public class ScreenShot {
 			Reporter.log("Unable to take screen shot<br>");
 			e.printStackTrace();
 		}
+		return Constants.screenShotDestination + fileName;
 
 	}
 
@@ -56,7 +57,7 @@ public class ScreenShot {
 	 * @param driver : WebDriver object
 	 * @param name : Screenshot file name
 	 */
-	public static void takeScreenShot(String name) {
+	public static String takeScreenShot(String name) {
 
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd.HH.mm.ss");
@@ -76,6 +77,7 @@ public class ScreenShot {
 			Reporter.log("Unable to take screen shot<br>");
 			e.printStackTrace();
 		}
+		return Constants.screenShotDestination + fileName;
 
 	}
 
